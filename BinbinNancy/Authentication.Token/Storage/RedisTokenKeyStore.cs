@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ServiceStack;
 using ServiceStack.Redis;
 
 namespace Nancy.Authentication.Token.Storage {
@@ -34,6 +35,13 @@ namespace Nancy.Authentication.Token.Storage {
                 port = Convert.ToInt32(redisConsColon[1]);
                 //more info: http://goo.gl/srA2uT
             }
+
+            public RedisClient GetClient() {
+                var redisClient = new RedisClient(host, port);
+                if (!string.IsNullOrEmpty(password))
+                    redisClient.Password = password;
+                return redisClient;
+            }
         }
         private readonly IRedisClient _client;
         private string _keyStoreName = "keyStore";
@@ -44,7 +52,7 @@ namespace Nancy.Authentication.Token.Storage {
         }
 
         public RedisTokenKeyStore(RedisConfiguration configuration)
-            : this(new RedisClient(configuration.host, configuration.port) { Password = configuration.password }) {
+            : this(configuration.GetClient()) {
 
         }
         public RedisTokenKeyStore(IRedisClient client) {
