@@ -59,7 +59,8 @@ namespace Nancy.Authentication.Token.Storage {
             _client = client;
         }
         public IDictionary<DateTime, byte[]> Retrieve() {
-            return this._client.Get<IDictionary<DateTime, byte[]>>(_keyStoreName);
+            var dictionary = this._client.Get<IDictionary<DateTime, byte[]>>(_keyStoreName);
+            return dictionary ?? new Dictionary<DateTime, byte[]>();
         }
 
         public void Store(IDictionary<DateTime, byte[]> keys) {
